@@ -1,2 +1,2 @@
 # codingportfolio
-code work I made
+C++ & Python coding projects/classwork
