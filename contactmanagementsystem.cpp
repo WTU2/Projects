@@ -103,7 +103,7 @@ void print(const vector<string>& contactNames) // prints vector of names
 
 	} while ((userChoice == 1) || (userChoice == 2));
 	
-	cout << "ERROR: Please enter a correct option" << endl;
+	cout << "ERROR: Enter a correct option\nInput 1 to go back\nInput 2 to exit program" << endl;
 }
 
 int main()
