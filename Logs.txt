@@ -1,0 +1,66 @@
+4/19/26
+ Currently have the program allow the user to select .mp4 files, and "saves" the directory for the user, w/ error handling
+  To do:
+    -process .mp4 video X
+    -allow the user to select a diretory to save the .mp3 file X
+    -implement editing tab for splicing and jointing .mp3 files
+  Currently:
+    -process the .mp4 file and convert to .mp3
+  Pseudo/flow:
+    1.) select mp4 file
+    2.) choose mp3 output
+    3.) click convert
+    4.) file successfully created
+    5.) ensure app does not freeze
+  Challenges:
+    Getting FFmpeg to work alongside with Qt
+        -not entirely sure if its a logic issue
+        -not entirely sure if FFmpeg is correctly implemented
+    File is not saving to directory chosen by the user
+  Solution:
+    FFmpeg works
+        -logic issue, program couldn't find FFmpeg
+        -had to manually use the directory to FFmpeg.exe as an argument rather than just "'ffmpeg'"
+          -in this, FFmpeg will have to be bundled with the build
+
+4/20/26
+ Currently allowed user to select .mp4 file and successfully converting to .mp3 file
+  To do:
+    implement progress bar that coincides with FFmpeg's progress X
+    implement editing audio files
+  Currently:
+    implementing live progress bar
+  Pseudo/flow:
+    1.) get the video's total duration
+    2.) read FFmpeg's current processed time
+          -from stderr (by connecting readyReadStandardError)
+    3.) convert the processed time into percentage
+    4.) update progressBar
+  --------------------------------------------------
+  Progress bar now works
+    1.) works by calling getVideoDurationInSeconds()
+    2.) works by getting FFprobe.exe path, then building the command line to call FFprob.exe, finally returning FFmpeg's processed time
+    3.) extracting the processed time from getVideoDurationInSeconds() function, then extracting hours, minutes, and seconds from the output, finally getting the
+        progress and updating the progress bar accordingly.
+  QOE (Quality of Life):
+    -resetted SelectedVideoPath for user to convert a new .mp4 file
+    -fixed a bug where the app freezes when replacing an existing .mp3 file
+
+4/23/26
+ Currently, processing the .mp4 file to an .mp3 file all works, now moving onto the editing feature of the program
+  To do:
+    Open a new window when the user selects the editing tab button X
+    Implement editing features onto the new window
+  Currently:
+    implementing new window for editing tab
+  Pseudo/flow:
+    1.) implement action into action editor
+    2.) connect the tab into the action
+    3.) define the button to open the new window
+  Challenges:
+    Creating a new class and being able to connect everything seemlessly
+        -not sure if it's a variable name issue or logic issue with the connection between the button and the program
+  Solution:
+    It was a connect action issue. However, I now have to resort to a drop down button, which I do not like. I will have to see if I can remove the drop down feature.
+      A new window does pop up, though. In regards to the drop down menu, I believe it has something to do with the way I implemented the tab.
+  
