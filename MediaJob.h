@@ -1,8 +1,8 @@
-#ifndef MEDIAJOB_H
-#define MEDIAJOB_H
-#include "QString"
+// #ifndef MEDIAJOB_H
+// #define MEDIAJOB_H
+// #include "QString"
 
-class MediaJob
+/*class MediaJob
 {
     public:
         MediaJob(const QString& inputPath, const QString& outputPath);
@@ -14,4 +14,4 @@ class MediaJob
         int progress_;
 };
 
-#endif // MEDIAJOB_H
+#endif // MEDIAJOB_H*/

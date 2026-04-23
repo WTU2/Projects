@@ -23,6 +23,7 @@ private slots:
     void onSelectVideoClicked();
     void onReadyReadStandardError();
     void onConversionFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void onMenuEditorButtonClicked();
 
 
 private:

@@ -1,9 +1,9 @@
-#include "MediaJob.h"
+// #include "MediaJob.h"
 #include <QDebug>
 #include <QThread>
 #include <QProcess>
 
-MediaJob::MediaJob(const QString& inputFile, const QString& outputFile) : inputPath(inputFile), outputPath(outputFile), progress_(0)
+/*MediaJob::MediaJob(const QString& inputFile, const QString& outputFile) : inputPath(inputFile), outputPath(outputFile), progress_(0)
 {
 }
 
@@ -26,4 +26,4 @@ int MediaJob::progress()
 {
     // simply returns the current value of progress_, a getter function basically
     return progress_;
-}
+}*/

@@ -84,16 +84,29 @@
      <string>Media Processing App</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuEditor">
+   <widget class="QMenu" name="menuEditorButton">
     <property name="title">
-     <string>Editor</string>
+     <string>menuEditorButton</string>
     </property>
-    <addaction name="separator"/>
+    <addaction name="actionEditorMenuBar_2"/>
    </widget>
    <addaction name="menuMedia_Processing_App"/>
-   <addaction name="menuEditor"/>
+   <addaction name="menuEditorButton"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionEditorMenuBar">
+   <property name="text">
+    <string>Open Editor</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionEditorMenuBar_2">
+   <property name="text">
+    <string>actionEditorMenuBar</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
