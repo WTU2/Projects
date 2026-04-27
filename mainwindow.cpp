@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 // #include "MediaJob.h"
-#include "editorwindow.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -27,7 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     // connecting select video button to slot
     connect(ui->selectVideo, &QPushButton::clicked, this, &MainWindow::onSelectVideoClicked);
 
-    connect(ui->actionEditorMenuBar_2, &QAction::triggered, this, &MainWindow::onMenuEditorButtonClicked);
+    // editing video
+    connect(ui->selectVideoToEdit, &QPushButton::clicked, this, &MainWindow::onSelectVideoToEdit);
 
     // on conversion finished
     process = new QProcess(this);
@@ -42,11 +42,37 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onMenuEditorButtonClicked()
+// editing
+void MainWindow::onSelectVideoToEdit()
 {
-    qDebug() << "Editor action triggered";
-    EditorWindow *window = new EditorWindow(this);
-    window->show();
+    QString filePath = QFileDialog::getOpenFileName(this, "Select Directory",
+                                                    QDir::homePath() + "/Desktop");
+    QFileInfo fileInfo(filePath);
+
+    if (filePath.isEmpty())
+    {
+        return;
+    }
+    QString ext = fileInfo.suffix().toLower();
+    bool valid = (ext == "mp4" || ext == "mp3");
+
+    if (!valid)
+    {
+        QMessageBox::warning(this, "Error: ", "File is not a .mp4 or .mp3 format!");
+        return;  // file not a .mp4 or .mp3
+    } else // works, otherwise
+    {
+        if (!filePath.isEmpty())
+        {
+            selectedVideoPath = filePath; // holding directory until user selects Convert button
+
+            ui->labelSelectedVideoToEdit->setText("File Selected: " + fileInfo.fileName());
+        }
+        else
+        {
+            return;
+        }
+    }
 }
 
 void MainWindow::onSelectVideoClicked()
@@ -95,6 +121,7 @@ void MainWindow::onStartButtonClicked()
         // NOTE:
             // program freezes when user tries to replace existing file
             // FIX THIS
+        ui->selectVideo->setEnabled(false);
         qDebug() << "Input: " << selectedVideoPath;
         qDebug() << "Output: " << outputPath;
         QStringList args;
@@ -190,6 +217,7 @@ void MainWindow::onReadyReadStandardError()
 
 void MainWindow::onConversionFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+    ui->selectVideo->setEnabled(true);
     ui->convertButton->setEnabled(true);
     ui->labelSelectedVideo->setText("");
     selectedVideoPath.clear();

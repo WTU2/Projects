@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>803</width>
+    <height>603</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,91 +17,174 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="convertButton">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>250</y>
-      <width>141</width>
-      <height>41</height>
+      <x>0</x>
+      <y>0</y>
+      <width>801</width>
+      <height>601</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Convert</string>
+    <property name="currentIndex">
+     <number>1</number>
     </property>
+    <widget class="QWidget" name="converterTab">
+     <attribute name="title">
+      <string>Converter</string>
+     </attribute>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>310</y>
+        <width>361</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelSelectedVideo">
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>150</y>
+        <width>221</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="selectVideo">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>140</y>
+        <width>181</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Select Video</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="convertButton">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>240</y>
+        <width>141</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Convert</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="editorTab">
+     <attribute name="title">
+      <string>Editor</string>
+     </attribute>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>0</y>
+        <width>161</width>
+        <height>131</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Trimmer</string>
+      </property>
+      <widget class="QLineEdit" name="lineEdit_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>113</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>End Time: </string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>113</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Start Time: </string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>80</y>
+         <width>93</width>
+         <height>29</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Trim</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>261</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Video Select</string>
+      </property>
+      <widget class="QPushButton" name="selectVideoToEdit">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>30</y>
+         <width>181</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Select Video</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelSelectedVideoToEdit">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>100</y>
+         <width>221</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </widget>
+    </widget>
    </widget>
-   <widget class="QProgressBar" name="progressBar">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>320</y>
-      <width>361</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>0</number>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="selectVideo">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>150</y>
-      <width>181</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Select Video</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelSelectedVideo">
-    <property name="geometry">
-     <rect>
-      <x>490</x>
-      <y>160</y>
-      <width>221</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuMedia_Processing_App">
-    <property name="title">
-     <string>Media Processing App</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuEditorButton">
-    <property name="title">
-     <string>menuEditorButton</string>
-    </property>
-    <addaction name="actionEditorMenuBar_2"/>
-   </widget>
-   <addaction name="menuMedia_Processing_App"/>
-   <addaction name="menuEditorButton"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionEditorMenuBar">
-   <property name="text">
-    <string>Open Editor</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
   <action name="actionEditorMenuBar_2">
    <property name="text">
     <string>actionEditorMenuBar</string>

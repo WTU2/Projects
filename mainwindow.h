@@ -21,10 +21,9 @@ public:
 private slots:
     void onStartButtonClicked();
     void onSelectVideoClicked();
+    void onSelectVideoToEdit();
     void onReadyReadStandardError();
     void onConversionFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void onMenuEditorButtonClicked();
-
 
 private:
     QProcess *process;
