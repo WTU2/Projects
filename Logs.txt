@@ -63,4 +63,20 @@
   Solution:
     It was a connect action issue. However, I now have to resort to a drop down button, which I do not like. I will have to see if I can remove the drop down feature.
       A new window does pop up, though. In regards to the drop down menu, I believe it has something to do with the way I implemented the tab.
-  
+
+4/27/26
+ Currently have conversion completed, and new window pops up when selecting the option on the drop down menu
+  To do:
+    Remove the drop down feature X
+    Implement editing features in the new window
+  Currently:
+    Removing the drop down feature X
+  Pseudo/flow
+    This is purely through the Qt designer window, no need to do any backend programming to add new pages or anything similar.
+  Currently:
+    Adding trimming feature onto editing page
+  Pseudo/flow:
+    1.) Add the necessary widgets X
+    2.) Extract the user specified start and end times
+    3.) Use FFmpeg to trim it
+    4.) Allow user to select which directory to save the new file in
