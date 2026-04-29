@@ -28,6 +28,27 @@ MainWindow::MainWindow(QWidget *parent)
 
     // editing video
     connect(ui->selectVideoToEdit, &QPushButton::clicked, this, &MainWindow::onSelectVideoToEdit);
+    connect(ui->trimButton, &QPushButton::clicked, this, &MainWindow::onTrimButtonClicked);
+    connect(ui->startSlider, &QSlider::valueChanged, this, [this](int value) { // start slider
+        {
+            if (value >= ui->endSlider->value())
+            {
+                ui->startSlider->setValue(ui->endSlider->value() - 1);
+                return;
+            }
+        }
+        ui->labelStartTime->setText(" " + secondsToTime(value));
+    });
+
+    connect(ui->endSlider, &QSlider::valueChanged, this, [this](int value) // end slider
+        {
+            if (value <= ui->startSlider->value())
+            {
+                ui->endSlider->setValue(ui->startSlider->value() + 1);
+                return;
+            }
+        ui->labelEndTime->setText(" " + secondsToTime(value));
+    });
 
     // on conversion finished
     process = new QProcess(this);
@@ -66,7 +87,19 @@ void MainWindow::onSelectVideoToEdit()
         {
             selectedVideoPath = filePath; // holding directory until user selects Convert button
 
-            ui->labelSelectedVideoToEdit->setText("File Selected: " + fileInfo.fileName());
+            totalDurationSeconds = getVideoDurationInSeconds(selectedVideoPath);
+            int duration = static_cast<int>(totalDurationSeconds);
+
+            ui->startSlider->setRange(0, duration);
+            ui->endSlider->setRange(0, duration);
+
+            ui->startSlider->setValue(0);
+            ui->endSlider->setValue(duration);
+
+            ui->labelStartTime->setText(" " + secondsToTime(0));
+            ui->labelEndTime->setText(" " + secondsToTime(duration));
+
+            ui->videoFileName->setText("File Selected: " + fileInfo.fileName());
         }
         else
         {
@@ -75,6 +108,66 @@ void MainWindow::onSelectVideoToEdit()
     }
 }
 
+void MainWindow::onTrimButtonClicked()
+{
+    QString filePath = selectedVideoPath;
+
+    QFileInfo fileInfo(filePath);
+
+    if (filePath.isEmpty())
+    {
+        QMessageBox::warning(this, "Error: ", "No file selected!");
+        return;
+    } else
+    {
+
+        QString outputPath = QFileDialog::getSaveFileName(this, "Select Directory", QDir::homePath() + "/Desktop/" + fileInfo.fileName());
+        QString ffmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg/bin/ffmpeg.exe";
+
+        if (outputPath.isEmpty())
+        {
+            return;
+        }
+
+        int startSeconds = ui->startSlider->value();
+        int endSeconds = ui->endSlider->value();
+
+        QString startTime = secondsToTime(startSeconds);
+        QString endTime = secondsToTime(endSeconds);
+
+        if (startSeconds >= endSeconds)
+        {
+            QMessageBox::warning(this, "Error", "Start time must be before end time");
+            return;
+        }
+
+        qDebug() << "Duration: " << totalDurationSeconds;
+        qDebug() << "End slider max: " << ui->endSlider->maximum();
+
+        qDebug() << "Input EDIT: " << selectedVideoPath;
+        qDebug() << "Output EDIT: " << outputPath;
+        QStringList args;
+        args << "-y"
+             << "-ss" << startTime
+             << "-to" << endTime
+             << "-i" << selectedVideoPath
+             << "-c" << "copy"
+             << outputPath;
+
+        ui->trimButton->setEnabled(false);
+        process->start(ffmpegPath, args);
+
+        if (!process->waitForStarted())
+        {
+            QMessageBox::warning(this, "Error", "FFmpeg failed to start!");
+            ui->trimButton->setEnabled(true);
+            return;
+        }
+        currentJob = JobType::Trim;
+    }
+}
+
+/* ------------------------------------------------------------------------------ */
 void MainWindow::onSelectVideoClicked()
 {
     QString filePath = QFileDialog::getOpenFileName(this, "Select Directory",
@@ -152,6 +245,7 @@ void MainWindow::onStartButtonClicked()
             ui->convertButton->setEnabled(true);
             return;
         }
+        currentJob = JobType::Convert;
     }
 }
 
@@ -219,16 +313,37 @@ void MainWindow::onConversionFinished(int exitCode, QProcess::ExitStatus exitSta
 {
     ui->selectVideo->setEnabled(true);
     ui->convertButton->setEnabled(true);
+    ui->trimButton->setEnabled(true);
     ui->labelSelectedVideo->setText("");
     selectedVideoPath.clear();
 
     if (exitStatus == QProcess::NormalExit && exitCode ==0)
     {
-        ui->progressBar->setValue(100);
-        QMessageBox::information(this, "Alert", "Processing Finished");
+        if (currentJob == JobType::Convert)
+        {
+            ui->progressBar->setValue(100);
+            QMessageBox::information(this, "Alert", "Processing Finished");
+        }
+        else if (currentJob == JobType::Trim)
+        {
+            QMessageBox::information(this, "Alert", "Trim Finished");
+        }
     } else
     {
         QMessageBox::warning(this, "Alert", "Processing Failed!");
     }
+    currentJob = JobType::None;
+}
 
+// helper function
+QString MainWindow::secondsToTime(int totalSeconds)
+{
+    int hours = totalSeconds / 3600;
+    int minutes = (totalSeconds % 3600) / 60;
+    int seconds = totalSeconds % 60;
+
+    return QString("%1:%2:%3")
+        .arg(hours, 2, 10, QChar('0'))
+        .arg(minutes, 2, 10, QChar('0'))
+        .arg(seconds, 2, 10, QChar('0'));
 }

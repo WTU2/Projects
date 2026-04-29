@@ -9,6 +9,13 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+enum class JobType
+{
+  None,
+  Convert,
+  Trim
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -24,13 +31,18 @@ private slots:
     void onSelectVideoToEdit();
     void onReadyReadStandardError();
     void onConversionFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void onTrimButtonClicked();
 
 private:
     QProcess *process;
     Ui::MainWindow *ui;
     QString selectedVideoPath;
     double totalDurationSeconds = 0.0;
+
     double getVideoDurationInSeconds(const QString &inputPath);
+    QString secondsToTime(int totalSeconds);
+
+    JobType currentJob = JobType::None;
 
 };
 #endif // MAINWINDOW_H
