@@ -63,7 +63,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-// editing
+/* -------------------------- EDITING FEATURE -------------------------- */
 void MainWindow::onSelectVideoToEdit()
 {
     QString filePath = QFileDialog::getOpenFileName(this, "Select Directory",
@@ -85,7 +85,7 @@ void MainWindow::onSelectVideoToEdit()
     {
         if (!filePath.isEmpty())
         {
-            selectedVideoPath = filePath; // holding directory until user selects Convert button
+            selectedVideoPath = filePath; // holding directory
 
             totalDurationSeconds = getVideoDurationInSeconds(selectedVideoPath);
             int duration = static_cast<int>(totalDurationSeconds);
@@ -124,8 +124,22 @@ void MainWindow::onTrimButtonClicked()
         QString outputPath = QFileDialog::getSaveFileName(this, "Select Directory", QDir::homePath() + "/Desktop/" + fileInfo.fileName());
         QString ffmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg/bin/ffmpeg.exe";
 
+        QFileInfo outputInfo(outputPath);
+
         if (outputPath.isEmpty())
         {
+            return;
+        }
+
+        if (fileInfo.absoluteFilePath() == outputInfo.absoluteFilePath())
+        {
+            QMessageBox::warning(this, "Error", "Output file cannot be the same as in the input file.\nPlease choose a different file name for the output.");
+            return;
+        }
+
+        if (fileInfo.suffix().toLower() != outputInfo.suffix().toLower())
+        {
+            QMessageBox::warning(this, "Error", "Input and output file type must match.\nPlease use the converter to convert file types.");
             return;
         }
 
@@ -141,6 +155,7 @@ void MainWindow::onTrimButtonClicked()
             return;
         }
 
+        // TRIMMING VIDEO
         qDebug() << "Duration: " << totalDurationSeconds;
         qDebug() << "End slider max: " << ui->endSlider->maximum();
 
@@ -167,14 +182,22 @@ void MainWindow::onTrimButtonClicked()
     }
 }
 
-/* ------------------------------------------------------------------------------ */
+/* -------------------------- CONVERTING FEATURE -------------------------- */
 void MainWindow::onSelectVideoClicked()
 {
     QString filePath = QFileDialog::getOpenFileName(this, "Select Directory",
                                                     QDir::homePath() + "/Desktop");
     QFileInfo fileInfo(filePath);
 
-    if (fileInfo.suffix().toLower() != "mp4" && fileInfo.suffix().toLower() != "")
+    if (filePath.isEmpty())
+    {
+        return;
+    }
+
+    QString ext = fileInfo.suffix().toLower();
+    bool valid = (ext == "mp4");
+
+    if (!valid)
     {
         QMessageBox::warning(this, "Error: ", "File is not a .mp4 format!");
         return;  // file not a .mp4
@@ -211,9 +234,6 @@ void MainWindow::onStartButtonClicked()
         }
 
         // PROCESSING VIDEO
-        // NOTE:
-            // program freezes when user tries to replace existing file
-            // FIX THIS
         ui->selectVideo->setEnabled(false);
         qDebug() << "Input: " << selectedVideoPath;
         qDebug() << "Output: " << outputPath;
@@ -280,6 +300,11 @@ void MainWindow::onReadyReadStandardError()
     QString output = QString::fromUtf8(process->readAllStandardError());
     qDebug() << output;
 
+    // guard to prevent progress bar being updated if user is trimming
+    if (currentJob != JobType::Convert)
+    {
+        return;
+    }
     /* extracting live progress from FFmpeg output
     / FFmpeg format = xx:xx:xx.xx"
     / therefore, \d{2} = hours, : = separator, (\d{2}) = minutes, : = separator,
@@ -314,8 +339,6 @@ void MainWindow::onConversionFinished(int exitCode, QProcess::ExitStatus exitSta
     ui->selectVideo->setEnabled(true);
     ui->convertButton->setEnabled(true);
     ui->trimButton->setEnabled(true);
-    ui->labelSelectedVideo->setText("");
-    selectedVideoPath.clear();
 
     if (exitStatus == QProcess::NormalExit && exitCode ==0)
     {
@@ -323,10 +346,14 @@ void MainWindow::onConversionFinished(int exitCode, QProcess::ExitStatus exitSta
         {
             ui->progressBar->setValue(100);
             QMessageBox::information(this, "Alert", "Processing Finished");
+            ui->labelSelectedVideo->setText("");
+            selectedVideoPath.clear();
         }
         else if (currentJob == JobType::Trim)
         {
             QMessageBox::information(this, "Alert", "Trim Finished");
+            ui->videoFileName->setText("");
+            selectedVideoPath.clear();
         }
     } else
     {
