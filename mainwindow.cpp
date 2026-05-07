@@ -219,6 +219,8 @@ void MainWindow::onStartButtonClicked()
 {
     QString filePath = selectedVideoPath;
 
+    QFileInfo fileInfo(filePath);
+
     if (filePath.isEmpty())
     {
         QMessageBox::warning(this, "Error: ", "No file selected!"); // no file selected
@@ -226,7 +228,7 @@ void MainWindow::onStartButtonClicked()
     } else
     {
         QString ffmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg/bin/ffmpeg.exe";
-        QString outputPath = QFileDialog::getSaveFileName(this, "Select Directory", QDir::homePath() + "/Desktop/output.mp3", "MP3 Files (*.mp3)");;
+        QString outputPath = QFileDialog::getSaveFileName(this, "Select Directory", fileInfo.completeBaseName(), "MP3 Files (*.mp3)");;
 
         if (outputPath.isEmpty())
         {
